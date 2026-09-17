@@ -63,7 +63,6 @@ st.divider()
 # ==========================================
 st.subheader("2. 장르 및 영화별 총 관객 수 분포")
 
-# Plotly 트리맵 생성 (장르 -> 영화명 위계구조)
 fig_treemap = px.treemap(
     df,
     path=[px.Constant("전체"), "genre", "movieNm"],
@@ -73,7 +72,6 @@ fig_treemap = px.treemap(
     hover_data={"total_audi": ":,d"},
 )
 
-# 툴팁(마우스 호버) 설정
 fig_treemap.update_traces(
     hovertemplate="<b>%{label}</b><br>총 관객 수: %{value:,}명"
 )
@@ -83,4 +81,36 @@ st.plotly_chart(fig_treemap, use_container_width=True)
 st.divider()
 st.markdown("💡 **이 그래프로 알 수 있는 것**")
 st.info("각 장르별 총 관객 수 규모와 함께 장르 내에서 어떤 영화가 전체 흥행을 주도했는지 상대적 크기로 파악할 수 있습니다.")
+st.divider()
+
+# ==========================================
+# 섹션 3: 총 관객 수 분포 (히스토그램)
+# ==========================================
+st.subheader("3. 총 관객 수 분포")
+
+fig_hist = px.histogram(
+    df,
+    x="total_audi",
+    nbins=30,
+    title="총 관객 수 히스토그램",
+    labels={"total_audi": "총 관객 수"},
+)
+
+fig_hist.update_traces(
+    hovertemplate="<b>관객 수 구간</b>: %{x}<br><b>영화 수</b>: %{y}편"
+)
+
+st.plotly_chart(fig_hist, use_container_width=True)
+
+# 최고 관객 수 영화 정보 자동 추출
+max_movie = df.loc[df["total_audi"].idxmax()]
+max_title = max_movie["movieNm"]
+max_audi = max_movie["total_audi"]
+
+st.divider()
+st.markdown("💡 **이 그래프로 알 수 있는 것**")
+st.info(
+    f"대부분의 영화가 관객 수 하위 구간(약 100만~200만 명 이하)에 촘촘히 몰려 있는 롱테일 분포를 보입니다. "
+    f"한편, 데이터셋에서 가장 많은 관객을 동원한 최고 흥행작은 **'{max_title}'**({max_audi:,}명)입니다."
+)
 st.divider()
