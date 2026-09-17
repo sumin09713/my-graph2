@@ -114,3 +114,30 @@ st.info(
     f"한편, 데이터셋에서 가장 많은 관객을 동원한 최고 흥행작은 **'{max_title}'**({max_audi:,}명)입니다."
 )
 st.divider()
+
+# ==========================================
+# 섹션 4: 개봉일 스크린수 vs 총 관객 수 (산점도)
+# ==========================================
+st.subheader("4. 개봉일 스크린수와 총 관객 수의 관계")
+
+fig_scatter = px.scatter(
+    df,
+    x="first_scrn",
+    y="total_audi",
+    color="genre",
+    hover_name="movieNm",
+    title="개봉일 스크린수 vs 총 관객 수 산점도",
+    labels={"first_scrn": "개봉일 스크린수", "total_audi": "총 관객 수", "genre": "장르"},
+    hover_data={"first_scrn": ":,d", "total_audi": ":,d"},
+)
+
+fig_scatter.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br>개봉일 스크린수: %{x:,}개<br>총 관객 수: %{y:,}명"
+)
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+st.divider()
+st.markdown("💡 **이 그래프로 알 수 있는 것**")
+st.info("개봉일 스크린수가 많을수록 대체로 총 관객 수도 증가하는 양의 상관관계를 보이지만, 스크린수가 적음에도 높은 관객 수를 기록하며 흥행에 성공한 반전 영화들도 확인할 수 있습니다.")
+st.divider()
